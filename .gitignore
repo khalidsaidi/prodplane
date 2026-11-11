@@ -1,0 +1,37 @@
+# Terraform working files and state
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.ovpn
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+
+# Local tooling and operating-system files
+.DS_Store
+.idea/
+.vscode/
+.playwright-cli/
+node_modules/
+__pycache__/
+*.pyc
+.venv/
