@@ -1,0 +1,11 @@
+# Apply with eventbridge after creating the referenced build project.
+rules = {
+  release-ready = {
+    event_pattern = "{\"source\":[\"example.application\"],\"detail-type\":[\"ReleaseReady\"]}"
+    codebuild_project_arn = "arn:aws:codebuild:us-east-1:111122223333:project/dev-release"
+    input_transformer = {
+      input_paths = { tag = "$.detail.imageTag" }
+      input_template = "{\"environmentVariablesOverride\":[{\"name\":\"IMAGE_TAG\",\"type\":\"PLAINTEXT\",\"value\":\"<tag>\"}]}"
+    }
+  }
+}

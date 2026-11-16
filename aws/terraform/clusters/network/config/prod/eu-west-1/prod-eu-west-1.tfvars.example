@@ -1,0 +1,37 @@
+# Platform network; optional application connectivity is supplied through peering.
+aws_region = "eu-west-1"
+cluster_environment = "prod"
+vpc_cidr = "10.10.0.0/16"
+availability_zones = [
+  "eu-west-1a",
+  "eu-west-1b"
+]
+private_subnet_cidrs = [
+  "10.10.0.0/20",
+  "10.10.16.0/20"
+]
+public_subnet_cidrs = [
+  "10.10.32.0/24",
+  "10.10.33.0/24"
+]
+bastion_ami_id = "ami-00000000000000000"
+bastion_instance_type = "t2.medium"
+bastion_key_name = "bastion_eu_west_1"
+client_cidr_block = "172.27.0.0/22"
+organization = "Example Organization"
+domain_name = "vpn.example.com"
+route53_zone_id = "REPLACE_WITH_ROUTE53_ZONE_ID"
+vpn_users = {
+  "operator": {
+    "email": "operator@example.com"
+  }
+}
+project_name = "prodplane"
+state_bucket = "REPLACE_WITH_STATE_BUCKET"
+state_region = "eu-west-1"
+state_key_prefix = "eu-west-1/"
+bastion_ssh_cidrs = [
+  "192.0.2.10/32"
+]
+peering = null
+efs_creation_token = "prod-environment-efs"

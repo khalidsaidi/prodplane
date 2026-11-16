@@ -1,0 +1,7 @@
+# Platform inputs only. Supply application definitions explicitly; empty maps create no workloads.
+aws_region = "eu-west-1"
+cluster_environment = "prod"
+project_name = "prodplane"
+state_bucket = "REPLACE_WITH_STATE_BUCKET"
+state_region = "eu-west-1"
+state_key_prefix = "eu-west-1/"

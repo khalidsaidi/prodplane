@@ -1,0 +1,27 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  pre_build:
+    commands:
+      - |
+        set -euo pipefail
+        : "${EKS_CLUSTER_NAME:?Set EKS_CLUSTER_NAME}"
+        : "${CLUSTER_REGION:?Set CLUSTER_REGION}"
+        : "${NAMESPACE:?Set NAMESPACE}"
+        : "${RELEASE_NAME:?Set RELEASE_NAME}"
+        : "${HELM_CHART:?Set an application chart path or OCI reference}"
+        : "${IMAGE_REPOSITORY:?Set IMAGE_REPOSITORY}"
+        : "${IMAGE_TAG:?Set IMAGE_TAG}"
+        command -v helm
+        role_args=()
+        if [[ -n "${EKS_KUBECTL_ROLE_ARN:-}" ]]; then role_args=(--role-arn="$EKS_KUBECTL_ROLE_ARN"); fi
+        aws eks update-kubeconfig --name="$EKS_CLUSTER_NAME" --region="$CLUSTER_REGION" "${role_args[@]}"
+  build:
+    commands:
+      - |
+        set -euo pipefail
+        options=()
+        if [[ -n "${HELM_VALUES_FILE:-}" ]]; then options+=(--values="$HELM_VALUES_FILE"); fi
+        if [[ "${HELM_ATOMIC:-false}" == "true" ]]; then options+=(--atomic); fi
+        helm upgrade --install --namespace="$NAMESPACE" --wait --timeout="${HELM_TIMEOUT:-10m}" --set-literal "image.repository=$IMAGE_REPOSITORY" --set-literal "image.tag=$IMAGE_TAG" "${options[@]}" -- "$RELEASE_NAME" "$HELM_CHART"

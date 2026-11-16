@@ -1,0 +1,10 @@
+# Apply with app_deploy. Names and JSON keys belong to the application.
+config_maps = {
+  runtime = { APP_MODE = "example" }
+}
+application_secrets = {
+  credentials = {
+    source_secret_id = "REPLACE_WITH_SECRET_ID"
+    keys = { token = "api_token" }
+  }
+}

@@ -1,0 +1,14 @@
+# Platform inputs only. Supply application definitions explicitly; empty maps create no workloads.
+aws_region = "us-east-1"
+cluster_environment = "non-prod"
+eks_cluster_name = ""
+fluentbit_namespace = "logs"
+configure_aws_auth_configmap = true
+fluentbit_http_server = "On"
+fluentbit_http_port = 2020
+fluentbit_read_from_head = "Off"
+fluentbit_storage_path = "/var/fluent-bit/state/flb-storage/"
+project_name = "prodplane"
+state_bucket = "REPLACE_WITH_STATE_BUCKET"
+state_region = "us-east-1"
+state_key_prefix = "us-east-1/"

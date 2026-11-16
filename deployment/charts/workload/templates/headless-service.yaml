@@ -1,0 +1,16 @@
+{{- if eq .Values.kind "StatefulSet" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-peers" (include "workload.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: {{ .Values.statefulSet.publishNotReadyAddresses }}
+  selector:
+    {{- include "workload.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.containerPort }}
+      targetPort: http
+{{- end }}

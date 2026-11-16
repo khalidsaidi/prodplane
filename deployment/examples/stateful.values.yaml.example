@@ -1,0 +1,19 @@
+kind: StatefulSet
+replicaCount: 3
+image:
+  repository: registry.example.com/team/stateful-workload
+  tag: release-001
+statefulSet:
+  podManagementPolicy: Parallel
+volumeMounts:
+  - name: data
+    mountPath: /data
+volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: REPLACE_WITH_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

@@ -1,0 +1,46 @@
+# Merge this map into the selected app_deploy tfvars after setting the repository,
+# runner images and ECR URI. Both jobs must use the same pinned source revision
+# and release tag. Run image to successful completion before starting release.
+# The source repository contains Dockerfile, charts/workload and deploy.values.yaml.
+codebuild_projects = {
+  image = {
+    create                    = true
+    repository_url            = "https://github.com/example/application.git"
+    source_version            = "REPLACE_WITH_SOURCE_COMMIT"
+    buildspec_template        = "build-image"
+    privileged_mode           = true
+    compute_type              = "BUILD_GENERAL1_SMALL"
+    image                     = "REPLACE_WITH_BUILD_RUNNER_IMAGE"
+    timeout_in_minutes        = 30
+    queued_timeout_in_minutes = 60
+    # To export the image receipt, configure an existing output bucket:
+    # artifacts = { type = "S3", location = "REPLACE_WITH_OUTPUT_BUCKET" }
+    environment_variables = [
+      { name = "ARTIFACT_REGION", value = "AUTO" },
+      { name = "IMAGE_REPOSITORY", value = "111122223333.dkr.ecr.us-east-1.amazonaws.com/example" },
+      { name = "IMAGE_TAG", value = "release-001" }
+    ]
+  }
+  release = {
+    create                    = true
+    repository_url            = "https://github.com/example/application.git"
+    source_version            = "REPLACE_WITH_SOURCE_COMMIT"
+    buildspec_template        = "deploy-helm"
+    compute_type              = "BUILD_GENERAL1_SMALL"
+    image                     = "REPLACE_WITH_DEPLOY_RUNNER_IMAGE"
+    timeout_in_minutes        = 30
+    queued_timeout_in_minutes = 60
+    environment_variables = [
+      { name = "EKS_CLUSTER_NAME", value = "AUTO" },
+      { name = "EKS_KUBECTL_ROLE_ARN", value = "AUTO" },
+      { name = "CLUSTER_REGION", value = "AUTO" },
+      { name = "NAMESPACE", value = "AUTO" },
+      { name = "RELEASE_NAME", value = "example" },
+      { name = "HELM_CHART", value = "charts/workload" },
+      { name = "HELM_VALUES_FILE", value = "deploy.values.yaml" },
+      { name = "IMAGE_REPOSITORY", value = "111122223333.dkr.ecr.us-east-1.amazonaws.com/example" },
+      { name = "IMAGE_TAG", value = "release-001" },
+      { name = "HELM_ATOMIC", value = "true" }
+    ]
+  }
+}

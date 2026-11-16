@@ -1,0 +1,67 @@
+nameOverride: ""
+fullnameOverride: ""
+replicaCount: 1
+kind: Deployment
+statefulSet:
+  podManagementPolicy: OrderedReady
+  publishNotReadyAddresses: true
+  updateStrategy: {}
+volumeClaimTemplates: []
+image:
+  repository: ""
+  tag: ""
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+containerPort: 8080
+command: []
+args: []
+initContainers: []
+extraContainers: []
+lifecycle: {}
+env: []
+envFrom: []
+volumes: []
+volumeMounts: []
+resources: {}
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+readinessProbe: {}
+livenessProbe: {}
+startupProbe: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: false
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: false
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/target-type: ip
+  hosts: []
+  path: /
+  pathType: Prefix
+  tls: []
+migration:
+  enabled: false
+  serviceAccountName: default
+  automountServiceAccountToken: false
+  image: ""
+  command: []
+  args: []
+  env: []
+  envFrom: []
+  volumes: []
+  volumeMounts: []
+  resources: {}
+  hooks: pre-install,pre-upgrade
+  backoffLimit: 0
+  activeDeadlineSeconds: 300

@@ -21,8 +21,15 @@ terraform.rc
 *.p12
 *.pfx
 *.ovpn
+*.jwks
 *.tfvars
 *.tfvars.json
+**/config/**/*.hcl
+**/values.*.yaml
+*.local.tfvars
+*.local.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
 !*.tfvars.example
 !*.tfvars.json.example
 
@@ -35,3 +42,10 @@ node_modules/
 __pycache__/
 *.pyc
 .venv/
+.prodplane/
+.prodplane-build/
+.pytest_cache/
+.coverage
+*.local.json
+aws/terraform/scripts/route_records.json
+output/

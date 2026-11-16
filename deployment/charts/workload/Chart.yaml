@@ -1,0 +1,5 @@
+apiVersion: v2
+name: workload
+description: An application-neutral Kubernetes workload with optional service, ingress and migration job.
+type: application
+version: 0.1.0

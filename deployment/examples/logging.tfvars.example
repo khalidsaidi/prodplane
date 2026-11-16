@@ -1,0 +1,7 @@
+# Apply with eks_addons. Persistent output is optional and requires RWX storage.
+fluentbit_cloudwatch_enabled = true
+fluentbit_persistence = {
+  storage_class_name = "efs-sc"
+  size = "10Gi"
+  # existing_claim = "operator-owned-archive"
+}

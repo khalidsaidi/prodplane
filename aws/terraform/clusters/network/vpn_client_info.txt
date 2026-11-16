@@ -1,0 +1,13 @@
+Client VPN access
+
+Configure vpn_users in the network inputs. Applying the network component
+generates a client profile for each configured user at users_dump/<alias>.ovpn.
+Each profile includes the CA certificate, client certificate and private key.
+Keep these files private and distribute each user only their own profile.
+
+Import the generated profile into an AWS VPN Client or a compatible OpenVPN
+client. Once connected, use the bastion's private IP for SSH access.
+
+The client CIDR must not overlap the VPC CIDR. The bastion security group
+allows SSH from the Client VPN security group. Configure any additional
+application access through the relevant security groups and VPN rules.

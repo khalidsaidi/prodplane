@@ -1,0 +1,14 @@
+# Apply with eventbridge after creating the destination log group.
+event_buses = ["example-events"]
+log_targets = {
+  audit = {
+    event_bus_name = "example-events"
+    event_pattern = "{\"source\":[{\"prefix\":\"example.\"}]}"
+    log_group_arn = "arn:aws:logs:us-east-1:111122223333:log-group:/example/events"
+  }
+}
+schema_discovery = {
+  events = {
+    source_arn = "arn:aws:events:us-east-1:111122223333:event-bus/example-events"
+  }
+}

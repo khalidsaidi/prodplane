@@ -1,0 +1,9 @@
+# Platform inputs only. Configure placeholders and supply application definitions explicitly.
+aws_region = "us-east-1"
+environment = "prod"
+cluster_environment = "prod"
+project_name = "prodplane"
+state_bucket = "REPLACE_WITH_STATE_BUCKET"
+state_region = "us-east-1"
+state_key_prefix = "us-east-1/"
+volumes = {}

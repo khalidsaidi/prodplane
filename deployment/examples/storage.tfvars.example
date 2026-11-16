@@ -1,0 +1,7 @@
+# Apply with the environment storage root after the namespace exists.
+volumes = {
+  shared-data = {
+    size = "5Gi"
+    # volume_handle = "fs-EXAMPLE::fsap-EXAMPLE"
+  }
+}

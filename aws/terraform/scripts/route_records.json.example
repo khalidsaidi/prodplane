@@ -1,0 +1,6 @@
+{
+  "example.com": [
+    "app.example.com",
+    "api.example.com"
+  ]
+}

@@ -1,0 +1,61 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  pre_build:
+    commands:
+      - |
+        set -euo pipefail
+        mkdir -p .prodplane-build
+        for receipt in .prodplane-build/image.json .prodplane-build/image.json.tmp; do
+          if [[ -e "$receipt" || -L "$receipt" ]]; then rm -- "$receipt"; fi
+        done
+        : "${IMAGE_REPOSITORY:?Set the complete ECR repository URI}"
+        : "${IMAGE_TAG:?Set the release tag}"
+        registry="${IMAGE_REPOSITORY%%/*}"
+        if [[ "$IMAGE_REPOSITORY" != */* || -z "${IMAGE_REPOSITORY#*/}" ]]; then
+          echo "Set a private ECR repository URI, including its repository path." >&2
+          exit 2
+        fi
+        # Restrict the credential recipient to recognized private ECR hosts.
+        ecr_host_pattern='^([0-9]{12})\.dkr[.-]ecr(-fips)?\.([a-z0-9][a-z0-9_-]*)\.(amazonaws\.(com(\.cn)?|eu)|on\.(aws|amazonwebservices\.com\.cn)|sc2s\.sgov\.gov|c2s\.ic\.gov|cloud\.adc-e\.uk|csp\.hci\.ic\.gov)$'
+        if [[ ! "$registry" =~ $ecr_host_pattern ]]; then
+          echo "IMAGE_REPOSITORY must target a private ECR registry." >&2
+          exit 2
+        fi
+        registry_region="${BASH_REMATCH[3]}"
+        export ARTIFACT_REGION="${ARTIFACT_REGION:-$registry_region}"
+        aws ecr get-login-password --region="$registry_region" | docker login --username AWS --password-stdin -- "$registry"
+      - |
+        set -euo pipefail
+        if [[ -n "${ARTIFACT_ASSET:-}" ]]; then
+          for setting in ARTIFACT_DOMAIN ARTIFACT_REPOSITORY ARTIFACT_FORMAT APP_PACKAGE ARTIFACT_VERSION ARTIFACT_OUTPUT; do
+            if [[ -z "${!setting:-}" ]]; then echo "Set $setting for artifact input." >&2; exit 2; fi
+          done
+          if [[ "$ARTIFACT_FORMAT" =~ ^(maven|swift|generic)$ && -z "${ARTIFACT_NAMESPACE:-}" ]]; then
+            echo "Set ARTIFACT_NAMESPACE for $ARTIFACT_FORMAT input." >&2
+            exit 2
+          fi
+          artifact_options=()
+          if [[ -n "${ARTIFACT_NAMESPACE:-}" ]]; then artifact_options+=(--namespace="$ARTIFACT_NAMESPACE"); fi
+          if [[ -n "${AWS_ACCOUNT_ID:-}" ]]; then artifact_options+=(--domain-owner="$AWS_ACCOUNT_ID"); fi
+          artifact_output="$ARTIFACT_OUTPUT"
+          if [[ "$artifact_output" == -* ]]; then artifact_output="./$artifact_output"; fi
+          mkdir -p -- "$(dirname -- "$artifact_output")"
+          aws codeartifact get-package-version-asset --region="$ARTIFACT_REGION" --domain="$ARTIFACT_DOMAIN" --repository="$ARTIFACT_REPOSITORY" --format="$ARTIFACT_FORMAT" --package="$APP_PACKAGE" --package-version="$ARTIFACT_VERSION" --asset="$ARTIFACT_ASSET" "${artifact_options[@]}" "$artifact_output"
+        fi
+  build:
+    commands:
+      - docker build --file "${DOCKERFILE:-Dockerfile}" --tag "$IMAGE_REPOSITORY:$IMAGE_TAG" "${BUILD_CONTEXT:-.}"
+  post_build:
+    commands:
+      - |
+        set -euo pipefail
+        test "${CODEBUILD_BUILD_SUCCEEDING:-0}" = "1"
+        docker push "$IMAGE_REPOSITORY:$IMAGE_TAG"
+        printf '{"image":"%s"}\n' "$IMAGE_REPOSITORY:$IMAGE_TAG" > .prodplane-build/image.json.tmp
+        mv -- .prodplane-build/image.json.tmp .prodplane-build/image.json
+artifacts:
+  base-directory: .prodplane-build
+  files:
+    - image.json

@@ -1,0 +1,5 @@
+bucket = "REPLACE_WITH_STATE_BUCKET"
+key            = "us-east-1/environments/eventbridge/non-prod/dev-recovery/terraform.tfstate"
+region = "us-east-1"
+dynamodb_table = "REPLACE_WITH_LOCK_TABLE"
+encrypt        = true
