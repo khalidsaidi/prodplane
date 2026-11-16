@@ -6,6 +6,8 @@ Prodplane delivers one opinionated AWS/EKS system for running applications: a tw
 
 The same Terraform roots, scripts and delivery recipes serve every environment. Configuration selects the cluster, region, environment settings and requested resources. Trusted operators use those inputs to provision and operate the system.
 
+**[Get started: install the platform and deploy your application](docs/getting-started.md)** · [Releases](https://github.com/khalidsaidi/prodplane/releases) · [Apache-2.0 license](LICENSE)
+
 ## One system, environments defined by configuration
 
 **The architecture is fixed; the environment inventory is configurable.** Prodplane's standard lifecycle names are `sandbox`, `dev`, `test`, `staging` and `prod`, following AWS's environment terminology. Use `demo` for demonstrations and `<environment>-recovery` for recovery targets. Provision the environments you need through configuration; the Terraform roots, scripts and delivery recipes remain shared.
@@ -193,6 +195,8 @@ Application resource maps default to empty. Creating an environment creates its 
 
 ## Configure and use
 
+Follow the [getting-started guide](docs/getting-started.md) for a complete `non-prod` / `dev` installation, from AWS prerequisites through a successful application release.
+
 Copy the selected `*.tfvars.example` and `*-backend.hcl.example` files without the `.example` suffix, then replace their account, network and state placeholders. Supply application maps explicitly; examples are under `deployment/examples/`.
 
 ```bash
@@ -216,3 +220,7 @@ Each component uses independent Terraform state.
 - [Capabilities and ownership](docs/platform-capabilities.md)
 - [Terraform components](aws/terraform/README.md)
 - [Deployment templates and tools](deployment/README.md)
+
+## License
+
+Prodplane is licensed under [Apache-2.0](LICENSE). The bundled AWS Load Balancer Controller policy retains its [upstream attribution and license](aws/terraform/clusters/eks_addons/policies/README.md).
